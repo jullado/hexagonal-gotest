@@ -45,7 +45,7 @@ func (r userRepo) Create(payload models.RepoCreateUserModel) (err error) {
 	return nil
 }
 
-func (r userRepo) Update(payload models.RepoUpdateUserModel) (err error) {
+func (r userRepo) Update(userId string, payload models.RepoUpdateUserModel) (err error) {
 	return nil
 }
 

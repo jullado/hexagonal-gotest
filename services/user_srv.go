@@ -4,6 +4,7 @@ import (
 	"errors"
 	"hexagonal-gotest/models"
 	"hexagonal-gotest/repositories"
+	"hexagonal-gotest/utils"
 
 	"github.com/google/uuid"
 )
@@ -42,5 +43,65 @@ func (s userSrv) Register(username, password string) (err error) {
 		return errors.New(models.ErrUnexpected)
 	}
 
-	return nil
+	return
+}
+
+func (s userSrv) Login(username, password string) (token string, err error) {
+	if username == "" {
+		return token, errors.New(models.ErrUsernameNotfound)
+	}
+
+	if password == "" {
+		return token, errors.New(models.ErrPasswordNotfound)
+	}
+
+	if len(password) < 6 || len(password) > 16 {
+		return token, errors.New(models.ErrPasswordFormat)
+	}
+
+	resUsers, err := s.userRepo.Gets(models.RepoGetUserModel{Username: username})
+	if err != nil {
+		return token, errors.New(models.ErrUnexpected)
+	}
+	if len(resUsers) == 0 {
+		return token, errors.New(models.ErrUsernameIsNotExist)
+	}
+
+	token, err = utils.SignJWT(utils.TokenDataModel{UserId: resUsers[0].UserId, Username: resUsers[0].Username})
+
+	return
+}
+
+func (s userSrv) ResetPassword(userId, newPassword string) (err error) {
+	if newPassword == "" {
+		return errors.New(models.ErrPasswordNotfound)
+	}
+
+	if len(newPassword) < 6 || len(newPassword) > 16 {
+		return errors.New(models.ErrPasswordFormat)
+	}
+
+	if _, err := uuid.Parse(userId); err != nil {
+		return errors.New(models.ErrUserIdFormat)
+	}
+
+	err = s.userRepo.Update(userId, models.RepoUpdateUserModel{Password: newPassword})
+	if err != nil {
+		return errors.New(models.ErrUnexpected)
+	}
+
+	return
+}
+
+func (s userSrv) DeleteUser(userId string) (err error) {
+	if _, err := uuid.Parse(userId); err != nil {
+		return errors.New(models.ErrUserIdFormat)
+	}
+
+	err = s.userRepo.Delete(userId)
+	if err != nil {
+		return errors.New(models.ErrUnexpected)
+	}
+
+	return
 }

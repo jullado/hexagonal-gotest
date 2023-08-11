@@ -28,8 +28,8 @@ func (m *userRepoMock) Create(payload models.RepoCreateUserModel) (err error) {
 	return args.Error(0)
 }
 
-func (m *userRepoMock) Update(payload models.RepoUpdateUserModel) (err error) {
-	args := m.Called(payload)
+func (m *userRepoMock) Update(userId string, payload models.RepoUpdateUserModel) (err error) {
+	args := m.Called(userId, payload)
 	return args.Error(0)
 }
 

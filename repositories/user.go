@@ -8,7 +8,7 @@ type UserRepository interface {
 
 	Create(payload models.RepoCreateUserModel) (err error)
 
-	Update(payload models.RepoUpdateUserModel) (err error)
+	Update(userId string, payload models.RepoUpdateUserModel) (err error)
 
 	Delete(userId string) (err error)
 }
