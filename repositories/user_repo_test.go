@@ -55,10 +55,8 @@ func TestGetsUser(t *testing.T) {
 		},
 	}
 
-	dbName := "julladith"
 	collection := "users"
-	opts := mtest.NewOptions().DatabaseName(dbName).ClientType(mtest.Mock)
-	mt := mtest.New(t, opts)
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
 	for _, tt := range tests {
@@ -79,8 +77,8 @@ func TestGetsUser(t *testing.T) {
 					doc := bson.D{}
 					bson.Unmarshal(data, &doc)
 
-					first := mtest.CreateCursorResponse(1, fmt.Sprintf("%v.%v", dbName, collection), mtest.FirstBatch, doc)
-					killCursors := mtest.CreateCursorResponse(0, fmt.Sprintf("%v.%v", dbName, collection), mtest.NextBatch)
+					first := mtest.CreateCursorResponse(1, fmt.Sprintf("%v.%v", "DBtest", collection), mtest.FirstBatch, doc)
+					killCursors := mtest.CreateCursorResponse(0, fmt.Sprintf("%v.%v", "DBtest", collection), mtest.NextBatch)
 					mt.AddMockResponses(first, killCursors)
 				}
 
@@ -108,18 +106,6 @@ func TestCreateUser(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name: "success1",
-			args: args{
-				payload: models.RepoCreateUserModel{
-					UserId:   "123",
-					Username: "admin",
-					Password: "admin01",
-				},
-			},
-			wantResult: mtest.CreateSuccessResponse(),
-			wantErr:    false,
-		},
-		{
 			name: "error1",
 			args: args{
 				payload: models.RepoCreateUserModel{
@@ -135,12 +121,21 @@ func TestCreateUser(t *testing.T) {
 			}),
 			wantErr: true,
 		},
+		{
+			name: "success1",
+			args: args{
+				payload: models.RepoCreateUserModel{
+					UserId:   "123",
+					Username: "admin",
+					Password: "admin01",
+				},
+			},
+			wantResult: mtest.CreateSuccessResponse(),
+			wantErr:    false,
+		},
 	}
 
-	dbName := "julladith"
-	collection := "users"
-	opts := mtest.NewOptions().DatabaseName(dbName).ClientType(mtest.Mock)
-	mt := mtest.New(t, opts)
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	defer mt.Close()
 
 	for _, tt := range tests {
@@ -152,10 +147,131 @@ func TestCreateUser(t *testing.T) {
 				// mock InsertOne
 				mt.AddMockResponses(tt.wantResult)
 
-				userRepo := repositories.NewUserRepository(mt.DB, collection)
+				userRepo := repositories.NewUserRepository(mt.DB, "users")
 
 				// -------------------- Act (กระทำ)--------------------
-				err := userRepo.Create(models.RepoCreateUserModel{UserId: tt.args.payload.UserId, Username: tt.args.payload.Username})
+				err := userRepo.Create(models.RepoCreateUserModel{UserId: tt.args.payload.UserId, Username: tt.args.payload.Username, Password: tt.args.payload.Password})
+
+				// -------------------- Assert (ยืนยีน) --------------------
+				assert.Equal(mt, tt.wantErr, err != nil)
+			})
+		})
+	}
+}
+
+func TestUpdateUser(t *testing.T) {
+	type args struct {
+		userId  string
+		payload models.RepoUpdateUserModel
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantResult bson.D
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "error1",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+				payload: models.RepoUpdateUserModel{
+					Username: "admin",
+					Password: "admin01",
+				},
+			},
+			wantResult: mtest.CreateWriteErrorsResponse(mtest.WriteError{
+				Index:   1,
+				Code:    123,
+				Message: "some error",
+			}),
+			wantErr: true,
+		},
+		{
+			name: "success1",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+				payload: models.RepoUpdateUserModel{
+					Username: "admin",
+					Password: "admin01",
+				},
+			},
+			wantResult: mtest.CreateSuccessResponse(bson.E{Key: "ok", Value: "1"}, bson.E{Key: "nModified", Value: 1}, bson.E{Key: "n", Value: 1}),
+			wantErr:    false,
+		},
+	}
+
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mt.Run(tt.name, func(mt *mtest.T) {
+				// ------------------- Arrange (เตรียมของ) --------------------
+
+				// mock UpdateOne
+				mt.AddMockResponses(tt.wantResult)
+
+				userRepo := repositories.NewUserRepository(mt.DB, "users")
+
+				// -------------------- Act (กระทำ)--------------------
+				err := userRepo.Update(tt.args.userId, models.RepoUpdateUserModel{Username: tt.args.payload.Username, Password: tt.args.payload.Password})
+
+				// -------------------- Assert (ยืนยีน) --------------------
+				assert.Equal(mt, tt.wantErr, err != nil)
+			})
+		})
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	type args struct {
+		userId string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantResult bson.D
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "error1",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+			},
+			wantResult: mtest.CreateWriteErrorsResponse(mtest.WriteError{
+				Index:   1,
+				Code:    123,
+				Message: "some error",
+			}),
+			wantErr: true,
+		},
+		{
+			name: "success1",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+			},
+			wantResult: mtest.CreateSuccessResponse(bson.E{Key: "ok", Value: "1"}, bson.E{Key: "acknowledged", Value: true}, bson.E{Key: "n", Value: 1}),
+			wantErr:    false,
+		},
+	}
+
+	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
+	defer mt.Close()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mt.Run(tt.name, func(mt *mtest.T) {
+				// ------------------- Arrange (เตรียมของ) --------------------
+
+				// mock DeleteOne
+				mt.AddMockResponses(tt.wantResult)
+
+				userRepo := repositories.NewUserRepository(mt.DB, "users")
+
+				// -------------------- Act (กระทำ)--------------------
+				err := userRepo.Delete(tt.args.userId)
 
 				// -------------------- Assert (ยืนยีน) --------------------
 				assert.Equal(mt, tt.wantErr, err != nil)

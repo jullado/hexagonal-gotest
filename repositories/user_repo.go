@@ -5,6 +5,7 @@ import (
 	"hexagonal-gotest/models"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -46,9 +47,25 @@ func (r userRepo) Create(payload models.RepoCreateUserModel) (err error) {
 }
 
 func (r userRepo) Update(userId string, payload models.RepoUpdateUserModel) (err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = r.db.Collection(r.collection).UpdateOne(ctx, bson.D{{Key: "user_id", Value: userId}}, bson.D{{Key: "$set", Value: payload}})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (r userRepo) Delete(userId string) (err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err = r.db.Collection(r.collection).DeleteOne(ctx, bson.D{{Key: "user_id", Value: userId}})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
