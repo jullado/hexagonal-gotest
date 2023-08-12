@@ -87,7 +87,7 @@ func TestGetsUser(t *testing.T) {
 				// -------------------- Act (กระทำ)--------------------
 				gotResult, err := userRepo.Gets(models.RepoGetUserModel{UserId: tt.args.filter.UserId, Username: tt.args.filter.Username})
 
-				// -------------------- Assert (ยืนยีน) --------------------
+				// -------------------- Assert (ยืนยัน) --------------------
 				assert.Equal(mt, tt.wantErr, err != nil)
 				assert.Equal(mt, tt.wantResult, gotResult)
 			})
@@ -152,7 +152,7 @@ func TestCreateUser(t *testing.T) {
 				// -------------------- Act (กระทำ)--------------------
 				err := userRepo.Create(models.RepoCreateUserModel{UserId: tt.args.payload.UserId, Username: tt.args.payload.Username, Password: tt.args.payload.Password})
 
-				// -------------------- Assert (ยืนยีน) --------------------
+				// -------------------- Assert (ยืนยัน) --------------------
 				assert.Equal(mt, tt.wantErr, err != nil)
 			})
 		})
@@ -229,7 +229,7 @@ func TestUpdateUser(t *testing.T) {
 				// -------------------- Act (กระทำ)--------------------
 				err := userRepo.Update(tt.args.userId, models.RepoUpdateUserModel{Username: tt.args.payload.Username, Password: tt.args.payload.Password})
 
-				// -------------------- Assert (ยืนยีน) --------------------
+				// -------------------- Assert (ยืนยัน) --------------------
 				assert.Equal(mt, tt.wantErr, err != nil)
 			})
 		})
@@ -293,7 +293,7 @@ func TestDeleteUser(t *testing.T) {
 				// -------------------- Act (กระทำ)--------------------
 				err := userRepo.Delete(tt.args.userId)
 
-				// -------------------- Assert (ยืนยีน) --------------------
+				// -------------------- Assert (ยืนยัน) --------------------
 				assert.Equal(mt, tt.wantErr, err != nil)
 			})
 		})

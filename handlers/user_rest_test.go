@@ -84,7 +84,7 @@ func TestRegister(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			userSrv.AssertCalled(t, "Register", tt.body.Username, tt.body.Password)
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
@@ -171,7 +171,7 @@ func TestLogin(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			userSrv.AssertCalled(t, "Login", tt.body.Username, tt.body.Password)
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
@@ -257,7 +257,7 @@ func TestResetPassword(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			userSrv.AssertCalled(t, "ResetPassword", tt.params.UserId, tt.body.Password)
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
@@ -334,7 +334,7 @@ func TestDeleteUser(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			userSrv.AssertCalled(t, "DeleteUser", tt.params.UserId)
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)

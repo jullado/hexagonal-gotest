@@ -103,7 +103,7 @@ func TestRegister(t *testing.T) {
 			// -------------------- Act (กระทำ)--------------------
 			err := userSrv.Register(tt.args.username, tt.args.password)
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			if tt.wantErr != nil {
 				assert.Equal(t, tt.wantErr, err)
 			} else {
@@ -203,7 +203,7 @@ func TestLogin(t *testing.T) {
 			// -------------------- Act (กระทำ)--------------------
 			gotToken, err := userService.Login(tt.args.username, tt.args.password)
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			if tt.wantErr != nil {
 				assert.Equal(t, tt.wantErr, err)
 			} else {
@@ -297,7 +297,7 @@ func TestResetPassword(t *testing.T) {
 			// -------------------- Act (กระทำ)--------------------
 			err := userService.ResetPassword(tt.args.userId, tt.args.newPassword)
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				userRepo.AssertCalled(t, "Update", tt.args.userId, mock.MatchedBy(func(filter models.RepoUpdateUserModel) bool {
@@ -361,7 +361,7 @@ func TestDeleteUser(t *testing.T) {
 			// -------------------- Act (กระทำ)--------------------
 			err := userService.DeleteUser(tt.args.userId)
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			assert.Equal(t, tt.wantErr, err)
 			if tt.wantErr == nil {
 				userRepo.AssertCalled(t, "Delete", tt.args.userId)

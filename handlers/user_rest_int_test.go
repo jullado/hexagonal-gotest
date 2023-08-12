@@ -139,7 +139,7 @@ func TestRegisterIntegration(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
 
@@ -277,7 +277,7 @@ func TestLoginIntegration(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
 
@@ -408,7 +408,7 @@ func TestResetPasswordIntegration(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
 
 			b, _ := io.ReadAll(res.Body)
@@ -497,7 +497,7 @@ func TestDeleteUserIntegration(t *testing.T) {
 			res, _ := app.Test(req)
 			defer res.Body.Close()
 
-			// -------------------- Assert (ยืนยีน) --------------------
+			// -------------------- Assert (ยืนยัน) --------------------
 			assert.Equal(t, tt.wantStatusCode, res.StatusCode)
 
 			b, _ := io.ReadAll(res.Body)
