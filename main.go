@@ -43,6 +43,9 @@ func main() {
 	//framework routes
 	app := fiber.New()
 	app.Post("/register", userHand.Register)
+	app.Post("/login", userHand.Login)
+	app.Put("/resetpassword/:user_id", userHand.ResetPassword)
+	app.Delete("/delete/:user_id", userHand.DeleteUser)
 
 	//start server
 	app.Listen(":3000")

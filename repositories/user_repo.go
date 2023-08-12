@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"hexagonal-gotest/models"
 	"time"
 
@@ -50,9 +51,13 @@ func (r userRepo) Update(userId string, payload models.RepoUpdateUserModel) (err
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err = r.db.Collection(r.collection).UpdateOne(ctx, bson.D{{Key: "user_id", Value: userId}}, bson.D{{Key: "$set", Value: payload}})
+	res, err := r.db.Collection(r.collection).UpdateOne(ctx, bson.D{{Key: "user_id", Value: userId}}, bson.D{{Key: "$set", Value: payload}})
 	if err != nil {
 		return err
+	}
+
+	if res.MatchedCount == 0 {
+		return errors.New(models.ErrUserIdIsNotExist)
 	}
 
 	return nil
@@ -62,9 +67,13 @@ func (r userRepo) Delete(userId string) (err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err = r.db.Collection(r.collection).DeleteOne(ctx, bson.D{{Key: "user_id", Value: userId}})
+	res, err := r.db.Collection(r.collection).DeleteOne(ctx, bson.D{{Key: "user_id", Value: userId}})
 	if err != nil {
 		return err
+	}
+
+	if res.DeletedCount == 0 {
+		return errors.New(models.ErrUserIdIsNotExist)
 	}
 
 	return nil

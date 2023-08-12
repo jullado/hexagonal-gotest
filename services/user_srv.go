@@ -67,6 +67,10 @@ func (s userSrv) Login(username, password string) (token string, err error) {
 		return token, errors.New(models.ErrUsernameIsNotExist)
 	}
 
+	if resUsers[0].Password != password {
+		return token, errors.New(models.ErrUnauthorized)
+	}
+
 	token, err = utils.SignJWT(utils.TokenDataModel{UserId: resUsers[0].UserId, Username: resUsers[0].Username})
 
 	return
@@ -87,6 +91,10 @@ func (s userSrv) ResetPassword(userId, newPassword string) (err error) {
 
 	err = s.userRepo.Update(userId, models.RepoUpdateUserModel{Password: newPassword})
 	if err != nil {
+		if err.Error() == models.ErrUserIdIsNotExist {
+			return errors.New(models.ErrUserIdIsNotExist)
+		}
+
 		return errors.New(models.ErrUnexpected)
 	}
 
@@ -100,6 +108,10 @@ func (s userSrv) DeleteUser(userId string) (err error) {
 
 	err = s.userRepo.Delete(userId)
 	if err != nil {
+		if err.Error() == models.ErrUserIdIsNotExist {
+			return errors.New(models.ErrUserIdIsNotExist)
+		}
+
 		return errors.New(models.ErrUnexpected)
 	}
 

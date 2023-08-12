@@ -21,7 +21,7 @@ func (m *userSrvMock) Login(username, password string) (token string, err error)
 }
 
 func (m *userSrvMock) ResetPassword(userId, newPassword string) (err error) {
-	args := m.Called(newPassword)
+	args := m.Called(userId, newPassword)
 	return args.Error(0)
 }
 

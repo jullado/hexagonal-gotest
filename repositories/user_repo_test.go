@@ -188,6 +188,18 @@ func TestUpdateUser(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "error2",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+				payload: models.RepoUpdateUserModel{
+					Username: "admin",
+					Password: "admin01",
+				},
+			},
+			wantResult: mtest.CreateSuccessResponse(bson.E{Key: "ok", Value: "0"}, bson.E{Key: "nModified", Value: 0}, bson.E{Key: "n", Value: 0}),
+			wantErr:    true,
+		},
+		{
 			name: "success1",
 			args: args{
 				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
@@ -246,6 +258,14 @@ func TestDeleteUser(t *testing.T) {
 				Message: "some error",
 			}),
 			wantErr: true,
+		},
+		{
+			name: "error2",
+			args: args{
+				userId: "225cfc88-c66b-4f2f-b424-a3b74e3b1191",
+			},
+			wantResult: mtest.CreateSuccessResponse(bson.E{Key: "ok", Value: "0"}, bson.E{Key: "acknowledged", Value: true}, bson.E{Key: "n", Value: 0}),
+			wantErr:    true,
 		},
 		{
 			name: "success1",
